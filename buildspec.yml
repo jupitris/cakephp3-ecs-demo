@@ -8,6 +8,7 @@ phases:
     commands:
       - aws --version
       - $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})
+      - APP_ENV=${APP_ENV}
       - IMAGE_NAME_PHP_FPM=php-fpm
       - IMAGE_NAME_NGINX=nginx
       - REPOSITORY_URI_PHP_FPM=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_NAME_PHP_FPM}
@@ -19,7 +20,7 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t ${REPOSITORY_URI_PHP_FPM}:latest -f docker/php-fpm/Dockerfile .
-      - docker build -t ${REPOSITORY_URI_NGINX}:latest -f docker/nginx/Dockerfile .
+      - docker build --build-args APP_ENV=APP_ENV -t ${REPOSITORY_URI_NGINX}:latest -f docker/nginx/Dockerfile .
       - docker tag ${REPOSITORY_URI_PHP_FPM}:latest ${REPOSITORY_URI_PHP_FPM}:$IMAGE_TAG
       - docker tag ${REPOSITORY_URI_NGINX}:latest ${REPOSITORY_URI_NGINX}:$IMAGE_TAG
   post_build:

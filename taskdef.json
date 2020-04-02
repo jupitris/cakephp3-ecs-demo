@@ -25,9 +25,6 @@
     {
       "name": "nginx",
       "image": "<IMAGE_NAME_NGINX>",
-      "environment" : [
-        { "name" : "APP_ENV", "value" : "production" }
-      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "secretOptions": null,
