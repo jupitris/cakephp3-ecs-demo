@@ -8,6 +8,7 @@ phases:
     commands:
       - aws --version
       - $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})
+      - export APP_ENV=production
       - IMAGE_NAME_PHP_FPM=php-fpm
       - IMAGE_NAME_NGINX=nginx
       - REPOSITORY_URI_PHP_FPM=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_NAME_PHP_FPM}
