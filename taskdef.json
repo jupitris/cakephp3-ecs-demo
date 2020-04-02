@@ -25,6 +25,9 @@
     {
       "name": "nginx",
       "image": "<IMAGE_NAME_NGINX>",
+      "environment" : [
+        { "name" : "APP_ENV", "value" : "production" }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "secretOptions": null,
@@ -48,8 +51,5 @@
   "networkMode": "awsvpc",
   "cpu": "256",
   "memory": "512",
-  "family": "<APP_NAME>-web",
-  "environment" : [
-    { "name" : "APP_ENV", "value" : "production" }
-  ]
+  "family": "<APP_NAME>-web"
 }
