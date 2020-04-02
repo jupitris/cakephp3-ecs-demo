@@ -7,7 +7,7 @@ phases:
   pre_build:
     commands:
       - aws --version
-      - $(aws ecr get-login-password --region ${AWS_DEFAULT_REGION})
+      - $(aws ecr get-login-password --region ${AWS_DEFAULT_REGION} |  docker login --username AWS --password-stdin https://${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com)
       - IMAGE_NAME_PHP_FPM=${APP_NAME}-php-fpm
       - IMAGE_NAME_NGINX=${APP_NAME}-nginx
       - REPOSITORY_URI_PHP_FPM=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_NAME_PHP_FPM}
