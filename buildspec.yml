@@ -1,0 +1,40 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      - aws --version
+      - $(aws ecr get-login-password --region ${AWS_DEFAULT_REGION})
+      - IMAGE_NAME_PHP_FPM=${APP_NAME}-php-fpm
+      - IMAGE_NAME_NGINX=${APP_NAME}-nginx
+      - REPOSITORY_URI_PHP_FPM=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_NAME_PHP_FPM}
+      - REPOSITORY_URI_NGINX=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_NAME_NGINX}
+      - COMMIT_HASH=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION} | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t ${REPOSITORY_URI_PHP_FPM}:latest -f docker/php-fpm/Dockerfile .
+      - docker build -t ${REPOSITORY_URI_NGINX}:latest -f docker/nginx/Dockerfile .
+      - docker tag ${REPOSITORY_URI_PHP_FPM}:latest ${REPOSITORY_URI_PHP_FPM}:$IMAGE_TAG
+      - docker tag ${REPOSITORY_URI_NGINX}:latest ${REPOSITORY_URI_NGINX}:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push ${REPOSITORY_URI_PHP_FPM}:latest
+      - docker push ${REPOSITORY_URI_PHP_FPM}:$IMAGE_TAG
+      - docker push ${REPOSITORY_URI_NGINX}:latest
+      - docker push ${REPOSITORY_URI_NGINX}:$IMAGE_TAG
+      - echo Writing image definitions file...
+      - cat taskdef.json | sed -e s@\<IMAGE_NAME_PHP_FPM\>@$REPOSITORY_URI_PHP_FPM:$IMAGE_TAG@ -e s@\<IMAGE_NAME_NGINX\>@$REPOSITORY_URI_NGINX:$IMAGE_TAG@ -e s@\<AWS_ACCOUNT_ID\>@${AWS_ACCOUNT_ID}@ -e s@\<APP_NAME\>@${APP_NAME}@ -e s@\<APP_REGION\>@${AWS_DEFAULT_REGION}@ > taskdef.json
+      - cat appspec.yml | sed -e s@\<APP_NAME\>@${APP_NAME}@ > appspec.yml
+
+artifacts:
+  files:
+    - appspec.yml
+    - taskdef.json

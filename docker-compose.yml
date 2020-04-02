@@ -1,0 +1,34 @@
+version: "3.2"
+services:
+  nginx:
+    build:
+        context: .
+        dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "40080:80"
+    depends_on:
+      - php-fpm
+  php-fpm:
+    build:
+        context: .
+        dockerfile: ./docker/php-fpm/Dockerfile
+    volumes:
+        - .:/var/www/html
+    ports:
+      - "49000:9000"
+    depends_on:
+      - db
+  db:
+    image: mysql:5.7
+    volumes:
+      - "db-data:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: cakephp3demo
+      MYSQL_DATABASE: cakephp3demo
+      MYSQL_USER: cakephp3demo
+      MYSQL_PASSWORD: cakephp3demo
+
+volumes:
+  db-data:
+  logs:
+    driver: local
