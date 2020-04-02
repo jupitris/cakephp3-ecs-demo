@@ -48,5 +48,5 @@
   "networkMode": "awsvpc",
   "cpu": "256",
   "memory": "512",
-  "family": "<APP_NAME>"
+  "family": "<APP_NAME>-web"
 }
