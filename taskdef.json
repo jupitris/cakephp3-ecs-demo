@@ -2,13 +2,13 @@
   "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "name": "<APP_NAME>-php-fpm",
+      "name": "php-fpm",
       "image": "<IMAGE_NAME_PHP_FPM>",
       "logConfiguration": {
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/<APP_NAME>",
+          "awslogs-group": "/ecs/<APP_NAME>-web",
           "awslogs-region": "<APP_REGION>",
           "awslogs-stream-prefix": "ecs"
         }
@@ -23,13 +23,13 @@
       "essential": true
     },
     {
-      "name": "<APP_NAME>-nginx",
+      "name": "nginx",
       "image": "<IMAGE_NAME_NGINX>",
       "logConfiguration": {
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/<APP_NAME>",
+          "awslogs-group": "/ecs/<APP_NAME>-web",
           "awslogs-region": "<APP_REGION>",
           "awslogs-stream-prefix": "ecs"
         }
