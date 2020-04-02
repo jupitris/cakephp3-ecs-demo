@@ -9,6 +9,8 @@ phases:
       - aws --version
       - $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})
       - APP_ENV=production
+      - BUCKET=${APP_NAME}.duxi.co.jp/${APP_ENV}
+      - aws s3 cp s3://${BUCKET}/app.php config/app.php
       - IMAGE_NAME_PHP_FPM=php-fpm
       - IMAGE_NAME_NGINX=nginx
       - REPOSITORY_URI_PHP_FPM=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_NAME_PHP_FPM}
