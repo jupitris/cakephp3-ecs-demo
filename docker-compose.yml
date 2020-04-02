@@ -4,6 +4,8 @@ services:
     build:
         context: .
         dockerfile: ./docker/nginx/Dockerfile
+        args:
+            APP_ENV: local
     ports:
       - "40080:80"
     depends_on:
