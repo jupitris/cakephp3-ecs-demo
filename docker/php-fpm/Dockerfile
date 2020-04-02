@@ -12,6 +12,7 @@ WORKDIR /var/www/html
 ADD . /var/www/html
 RUN composer update
 RUN chown -R www-data:www-data ./*
+RUN mkdir ./tmp
 RUN chmod -R go+w ./tmp
 USER www-data
 CMD ["php-fpm"]
